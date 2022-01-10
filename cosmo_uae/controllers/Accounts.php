@@ -1,0 +1,242 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+class Accounts extends CI_Controller
+{
+  function __construct()
+  {
+    parent::__construct();
+    $this->load->model('AccountsClass');
+  }
+  //Group start
+  public function Group()
+  {
+    $data = array('But' => 'Save', 'Icon' => 'fa fa-check', 'BtnColor' => 'bg-Green text-Green');
+    $this->load->view('Accounts/Group', $data);
+  }
+  public function Group_Save()
+  {
+    if ($this->AccountsClass->Group_Validation()) {
+      $this->AccountsClass->Group_Save();
+    }
+  }
+  public function Group_View()
+  {
+    $this->load->view('Accounts/Group_View');
+  }
+  //Group end 
+  //Ledger start
+  public function Ledger()
+  {
+	  	if(isset($_GET['Key']))
+{
+	 $data = array('But' => 'Update', 'Icon' => 'fa fa-check', 'BtnColor' => 'bg-Green text-Green');
+            $Id = base64_decode($_GET['Key']);
+            $dbdata = $this->GM->Ledger($status=0,$accountsgroup_id=0,$Id);
+            if ($dbdata[0]) { 
+                foreach ($dbdata[0] as $key => $value) {
+                    $_POST[$key] = $value;
+                }
+            }
+}
+else
+{
+	 $data = array('But' => 'Save', 'Icon' => 'fa fa-check', 'BtnColor' => 'bg-Green text-Green');
+      
+}
+
+    $this->load->view('Accounts/Ledger', $data);
+  }
+  public function Ledger_Save()
+  {
+    if ($this->AccountsClass->Ledger_Validation()) {
+      $this->AccountsClass->Ledger_Save();
+    }
+  }
+  public function Ledger_View()
+  {
+    $this->load->view('Accounts/Ledger_View');
+  }
+  //Ledger end 
+  // Voucher
+   public function Creditnote()
+  {
+    $data = array('But' => 'Save', 'Icon' => 'fa fa-check', 'BtnColor' => 'bg-Green text-Green');
+    $this->load->view('Accounts/Creditnote', $data);
+  }
+  
+  public function Voucher()
+  {
+    if (isset($_GET['Key'])) {       
+$data = array('But' => 'Update', 'Icon' => 'fa fa-check', 'BtnColor' => 'bg-Green text-Green');
+     				 
+            $Key = base64_decode($_GET['Key']);
+            $dbdata = $this->GM->Voucher($status = "1", $DebitedUser_Id = "0", $portal_Id = "0", $VoucherType_Id = "0", $amountmode_Id = "0",  $Key,  $from_date='', $to_date=''  );
+            if ($dbdata[0]) {
+                foreach ($dbdata[0] as $key => $value) {
+                    $_POST[$key] = $value;
+                }
+            }
+        }
+		else{
+			        $data = array('But' => 'Save', 'Icon' => 'fa fa-check', 'BtnColor' => 'bg-Green text-Green');
+				 
+		}
+    $this->load->view('Accounts/Voucher', $data);
+  }
+  public function Voucher_View()
+  {
+    $this->load->view('Accounts/Voucher_View');
+  }
+  public function CreditNote_View()
+  {
+    $this->load->view('Accounts/CreditNote_View');
+  }
+  public function CreditNote_invoice()
+  {
+	   $this->load->view('Accounts/CreditNote_invoice');
+  }
+  public function Voucher_invoice()
+  {
+    $this->load->view('Accounts/Voucher_invoice');
+  }
+  public function BankReconciliation()
+  {
+    $this->load->view('Accounts/BankReconciliation');
+  }
+  public function BankReconciliation_reconciled()
+  {
+    $this->load->view('Accounts/BankReconciliation_reconciled');
+  }
+  public function BankReconciliation_Save()
+  {
+   $this->AccountsClass->BankReconcilation();   
+    
+    echo "<script> history.go(-1);</script>";
+  }
+  
+  public function Voucher_invoiceprint()
+  {
+    $this->load->view('Accounts/Voucher_invoiceprint.php');
+  }
+  public function Voucher_Save()
+  {
+    if ($this->AccountsClass->Voucher_Validation()) {
+      $lastid = $this->AccountsClass->Voucher_Save();
+      if ($lastid) {
+        $this->AccountsClass->VoucherTransaction_Save($lastid);
+      }
+    }
+    echo "<script> history.go(-1);</script>";
+  }
+  public function Creditnote_Save()
+  {
+    if ($this->AccountsClass->Creditnote_Validation()) {
+       $this->AccountsClass->Creditnote_Save();    
+    }
+    echo "<script> history.go(-1);</script>";
+  }
+  public function VoucherAgainstSalesReturn()
+  {
+    if ($this->AccountsClass->VoucherAgainstSalesReturnVIEW_Validation()) {
+      $data = array('But' => 'Save', 'Icon' => 'fa fa-check', 'BtnColor' => 'bg-Green text-Green');
+      $this->load->view('Accounts/VoucherAgainstSalesReturn', $data);
+    } else {
+      echo "<script> history.go(-1);</script>";
+    }
+  }
+  public function VoucherAgainstSalesReturn_Save()
+  {
+    if ($this->AccountsClass->Voucher_Validation()) {
+      if ($this->AccountsClass->Voucher_Save()) {
+        $this->load->model('SalesReturnClass');
+        $_POST['SalesReturn_status_Id'] = "3";
+        if ($this->SalesReturnClass->TransSalesReturnStatus_Validation()) {
+          $this->SalesReturnClass->TransSalesReturnStatus_Save();
+        }
+        echo "<script> history.go(-2);</script>";
+      } else {
+        echo "<script> history.go(-1);</script>";
+      }
+    }
+  }
+  
+   //Acounts Sales Order 
+  	function AddOrder_Accounts()
+	{
+		if ($this->AccountsClass->orders_Validation()) {
+			$result = $this->AccountsClass->orders_Save();
+			if ($result) {
+					$this->session->set_flashdata('msgS', $result);
+			
+			
+			} else {
+					$this->session->set_flashdata('msgU', "Not Saved");
+						}
+		} else {
+			$this->session->set_flashdata('msgU', "Missing Details");
+		}
+		echo "<script> history.go(-1);</script>";
+	}
+	
+	public function Accounts_SalesOrder()
+    {
+		if (isset($_GET['Key']))
+		{ 
+			$data = array('But' => 'Update', 'Icon' => 'fa fa-check', 'BtnColor' => 'bg-Green text-Green');
+			$Key = base64_decode($_GET['Key']);
+			$dbdata = $this->GM->Orderlist($status_id = 1, $Warehouseid = "0", $Dealer_Id = "0", $salesexecutiveuser_Id = "0", $priority_Id = "0", $Order_status_Id = "0", $Key );
+			if ($dbdata[0]) {
+				foreach ($dbdata[0] as $key => $value) {
+					$_POST[$key] = $value;
+				}
+			}
+		}
+		else
+		{
+			$data = array('But' => 'Save', 'Icon' => 'fa fa-check', 'BtnColor' => 'bg-Green text-Green');
+		}
+
+		$this->load->view('Accounts/Accounts_SalesOrder', $data);	
+    }
+
+//*************************************************
+
+// Collection
+    public function Accounts_Collection()
+    {
+        $data = array('But' => 'Save', 'Icon' => 'fa fa-check', 'BtnColor' => 'bg-Green text-Green');
+        $this->load->view('Accounts/Accounts_Collection', $data);
+    }
+    public function Accounts_Collection_Save()
+    {
+        if ($this->AccountsClass->Collection_Validation()) {
+            $this->AccountsClass->Collection_Save();
+        }
+    }
+//*************************************************
+
+	public function Accounts_Orderlist()
+    {
+        $this->load->view('Accounts/Accounts_Orderlist');
+    }
+	
+	public function Accounts_Collection_View()
+    {
+        $this->load->view('Accounts/Accounts_Collection_View');
+    }
+	
+	 public function LedgerDetails_View()
+    {
+        $this->load->view('Accounts/LedgerDetails_View');
+    }
+
+    public function LedgerDetails_Edit()
+    {
+        $this->AccountsClass->LedgerDetails_Edit();
+    }
+
+    public function LedgerDetails_Edit_update()
+    {
+      $this->AccountsClass->LedgerDetails_Update();
+    }
+}
