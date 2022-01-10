@@ -1,0 +1,246 @@
+<?php
+// echo '<pre>';
+// print_r($countries);die;
+defined('BASEPATH') or exit('No direct script access allowed');
+include('Includes/Head.php');
+include('Includes/Menu.php');
+?>
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>GoodsTransfer</h1>
+    </section>
+    <section class="content">
+        <div class="box box-form box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Intra Branch GoodsTransfer Details</h3>
+                <div class="box-tools pull-right">
+                    <a href="<?php echo site_url('Inventory/GoodsTransfer_View'); ?>" class="btn btn-flat"><i class="fa fa-search"></i> View</a>
+                </div>
+            </div>
+            <?php echo form_open_multipart(site_url('Inventory/GoodsTransfer_') . 'Save_External/', 'role="form"'); ?>
+            <input type="hidden" name="GoodsTransfer_Id" value="<?php echo @$GoodsTransfer_Id; ?>">
+            <input type="hidden" name="User_Id" id="User_Id" value="<?php echo $this->session->userdata['cosmolog']['UId'] ?>" />
+            <input type="hidden" name="GoodsTransferType" value="2">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>From Country</label>
+                            <select id="from_country_id" disabled required class="form-control select2" name="from_country_id">
+                                <?php
+                                foreach ($countries as $c_k => $c_v) {
+                                    ?>
+                                    <option value="<?php echo $c_k;?>" <?php echo
+                                    ($c_k ==$source_country_id)? 'selected' :'';?>><?php echo $c_v;?></option>
+                                <?php } ?>
+                            </select>
+                            <?php echo form_error('from_country_id'); ?>
+                        </div>
+                        <div class="form-group">
+                            <label>To Country</label>
+                            <select id="to_country_id"  required class="form-control select2" name="to_country_id" onchange="get_Dest_warehouses()">
+                                <?php
+                                foreach ($countries as $c_k => $c_v) {
+                                    ?>
+                                    <option value="<?php echo $c_k;?>" ><?php echo $c_v;?></option>
+                                <?php } ?>
+                            </select>
+                            <?php echo form_error('to_country_id'); ?>
+                        </div>    
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="text" onkeypress="return false;" id="goodstransfer_date" class="form-control input-md Date" required name="goodstransfer_date" placeholder="Enter Date" value="<?php echo @set_value('goodstransfer_date ') . @$goodstransfer_date ; ?>">
+                            <?php echo form_error('goodstransfer_date '); ?>
+                        </div> 
+                        <div class="form-group">
+                            <label>description</label>
+                            <input type="text" id="Import_description" class="form-control input-md" required name="Import_description" placeholder="Enter Import_description" value="<?php echo @set_value('Import_description') . @$Import_description; ?>">
+                            <?php echo form_error('Import_description'); ?>
+                        </div>                  
+                        
+                                <?php
+                                $data = $this->GM->Office($officetype = "2", $status = "1", $Id = "0", $_SESSION['currentdatabasename']);
+                               foreach($data as $branch)
+                               {
+                                   ?>
+                                  <input type="hidden" name="to_branch_id" id="to_branch_id" value="<?php echo $branch->office_Id; ?>">
+                                   <?php
+
+                               }
+                                ?>
+                          
+                    </div>
+                        <div class="col-md-6">
+                        <div class="form-group">
+                            <label>From Warehouse</label>
+                            <select id="from_warehouse_id" onchange="from_warehouse_goods()" required class="form-control select2" name="from_warehouse_id">
+                                <?php
+                                $data = $this->GM->Warehouse();
+                                $this->GM->Option_($data, 'Warehouse_Id', 'WarehouseName', '', 'Select', @set_value('from_warehouse_id') . @$from_warehouse_id);
+                                ?>
+                            </select>
+                            <?php echo form_error('from_warehouse_id'); ?>
+                        </div>
+                        <div class="form-group">
+                            <label>To warehouse</label>
+                            <select id="to_warehouse_id" required class="form-control select2" name="to_warehouse_id">
+                            </select>
+                            <?php echo form_error('to_warehouse_id'); ?>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label>reference</label>
+                            <input type="text" id="import_reference" class="form-control input-md" required name="import_reference" placeholder="Enter import_reference" value="<?php echo @set_value('import_reference') . @$import_reference; ?>">
+                            <?php echo form_error('import_reference'); ?>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                    <table id="Goodslist" class="display nowrap " style="width:100%">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product</th>
+              <th>Serial_No</th>             
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+           
+          </tbody>
+        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="box-footer">
+                <a href="<?php echo site_url('Inventory/State'); ?>" class="btn btn-flat bg-red"><i class="fa fa-times"></i> Reset</a>
+                <button type="submit" class="btn <?php echo $BtnColor ?> btn-flat" name="Abut" value="<?php echo $But ?>">
+                    <i class="<?php echo $Icon ?>"></i> <?php echo $But ?></button>
+            </div>
+            </form>
+        </div>
+    </section>
+</div>
+<?php
+include('Includes/Foot.php');
+?>
+<script>
+    $(document).ready(function(){
+        get_Dest_warehouses();
+    })
+    function Addrow(data) {
+        data = JSON.parse(data);
+        var table = document.getElementById("Goodslist").getElementsByTagName('tbody')[0];
+        for (i = 0; i < data.length; i++) {
+            var rows = document.getElementById("Goodslist").rows.length;
+            var row = table.insertRow(-1);
+            var cell0 = row.insertCell(0);
+            var cell1 = row.insertCell(1);
+            var cell2 = row.insertCell(2);
+            var cell3 = row.insertCell(3);
+            rows--;
+            cell0.innerHTML = i;
+            cell1.innerHTML = data[i].Product;
+            cell2.innerHTML = data[i].serial_no;
+            cell3.innerHTML = `<span class="input-group-addon"><input type="checkbox"  class="Goods_Id" id="Goods_Id"  Value="` + data[i].serial_no + `" name="Goods_Id[` + rows + `]" ></span>`;
+        }
+        var table = $('#Goodslist').DataTable({
+          responsive: true,
+        });
+    }
+</script>
+<script>
+    function from_warehouse_goods() {
+        var e = document.getElementById("from_warehouse_id");
+        var Id = e.options[e.selectedIndex].value;      
+        if (Id) {
+            $(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '<?php echo site_url('API/Goods'); ?> ',
+                    data: {
+                        Warehouse_Id: Id                    
+                    },
+                    success: function(data) {
+                        Addrow(data);
+                       
+                     
+                    }
+                });
+            });
+        } 
+    }
+    function warehouse() {
+        var e = document.getElementById("to_branch_id");
+        var Id =  $('#to_branch_id option:selected').attr('max');     
+        if (Id) {
+            $(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '<?php echo site_url('API/Warehouse'); ?> ',
+                    data: {
+                        db: Id                    
+                    },
+                    success: function(data) {
+                        $("#to_warehouse_id").html(data);
+                    }
+                });
+            });
+        } 
+    }
+</script>
+<script>
+    function calAmount() {
+        var InvoiceTotal = 0.00;
+        $(".Invoice_Id:checked").each(function(index) {
+            InvoiceTotal = (parseFloat(InvoiceTotal) + parseFloat($(".Invoice_Id").eq(index).attr('max'))).toFixed(2);
+        });
+        console.log(InvoiceTotal);
+        $('#total').html(InvoiceTotal);
+    }
+</script>
+<script>
+    function Area() {
+        var e = document.getElementById("Warehouseid");
+        var Warehouseid = e.options[e.selectedIndex].value;
+        var Area_Id = '<?php echo @$Area_Id ?>';
+        if (Warehouseid) {
+            $(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '<?php echo site_url('Api/Area'); ?> ',
+                    data: {
+                        warehouse_Id: Warehouseid,
+                        Area_Id: Area_Id
+                    },
+                    success: function(data) {
+                        $("#area_Id").html(data);
+                    }
+                });
+            });
+        } else {
+            $("#area_Id").html('');
+        }
+        invoicelist();
+    }
+    function get_Dest_warehouses(){
+        var e = document.getElementById("to_country_id");
+        var Id = e.options[e.selectedIndex].value;
+        
+        if (Id) {
+            $('#to_warehouse_id').html('')
+            $(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '<?php echo site_url('API/DestinationWarehouses'); ?> ',
+                    data: {
+                        Country_ID: Id                    
+                    },
+                    success: function(data) {
+                     $('#to_warehouse_id').html(data)
+                    }
+                });
+            });
+        }
+    }
+</script>

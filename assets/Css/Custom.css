@@ -1,0 +1,128 @@
+@charset "utf-8";
+/* CSS Document */
+.d-none
+{
+	display: none !important;
+}
+.bg-skasc {
+	color: #000;
+	background-color: #38599E !important
+}
+.bg-skasc-light {
+	color: #000;
+	background-color: #5C7AB8 !important
+}
+.box.box-solid.box-form {
+	border: 1px solid #1a2226
+}
+.box.box-solid.box-form>.box-header {
+	color: #fff;
+	background: #1a2226;
+	background-color: #1a2226
+}
+.box.box-solid.box-form>.box-header a, .box.box-solid.box-form>.box-header .btn {
+	color: #fff
+}
+
+.box.box-solid.box-view {
+	border: 1px solid #BF5A89
+}
+.box.box-solid.box-view>.box-header {
+	color: #fff;
+	background: #BF5A89;
+	background-color: #BF5A89
+}
+.box.box-solid.box-view>.box-header a, .box.box-solid.box-view>.box-header .btn {
+	color: #fff
+}
+.bg-form
+{
+	background-color:#1a2226;
+	color:#FFFFFF;
+}
+.oite
+{
+	color:#FFFFFF !important;
+}
+[class^='select2'] {
+  border-radius: 5px !important;
+  
+}
+thead, th 
+{
+	
+	background-color:#ddd;
+	color: #1a2226;
+}
+
+.bg-grayy{
+ background-color:#3A3939;
+ color:#E8E12D;
+}
+label
+{
+	color: #1a2226;
+}
+.form-control
+{
+	border-radius:5px;
+}
+.mobile-number-box
+{
+  width:100%;
+}
+.mobile-code
+{
+  background-color: #eee;
+  color:#000;
+  float:left;
+  width:10%;
+  padding: 1% 0%;
+  text-align: center;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  font-size: 0.9em;
+}
+.mobile-input
+{
+  
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  float:left;
+  width:90%;
+}
+.hideinputtext
+{
+	width: 0px;
+	height: 0px;
+	padding: 0px;
+	border: none;
+	margin:0px;
+}
+.borderless
+{
+	width:100%;
+	border:none;
+}
+.borderless:focus
+{
+	border: none;
+	outline: none;
+}
+.horizondal-splitter
+{
+	-moz-border-bottom-colors: none;
+	-moz-border-image: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	border-color: #EEEEEE -moz-use-text-color #FFFFFF;
+	border-style: solid none;
+	border-width: 1px 0;
+	margin: 18px 0;
+}
+.forminline-label
+{
+	width: 50px;
+	float: left;
+}
