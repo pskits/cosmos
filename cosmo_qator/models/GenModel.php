@@ -1156,6 +1156,16 @@ class GenModel extends CI_Model
 		if (empty($timeZoneTarget)) {
 			$timeZoneTarget = date_default_timezone_get();
 		}
+		$data_array =explode('/', $dateString);
+		if(count($data_array) > 1){
+			if($data_array[1] >12){
+				$dateString = $data_array[2] . '-' . $data_array[0] . '-' . $data_array[1];
+			}else{
+				$date = DateTime::createFromFormat('m/d/y', $dateString); 
+				$dateString = $date->format('Y-m-d');
+			}
+			
+		} 
 		$dt = new DateTime($dateString, new DateTimeZone($timeZoneSource));
 		$dt->setTimezone(new DateTimeZone($timeZoneTarget));
 		return $dt->format("d/m/Y h:i:s A");
