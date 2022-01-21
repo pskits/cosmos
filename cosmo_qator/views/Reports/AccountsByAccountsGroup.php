@@ -83,14 +83,18 @@ include('Includes/ReportsMenu.php');
                         ?>
                             <tr>                               
                                <td><b><a href="<?php echo site_url('Reports/AccountsByAccountsGroup') . '/?Accountsgroup_Id=' . $Row->Accountsgroup_Id.'&fromdate='.$fromdate.'&todate='.$todate; ?> "><?php echo $Row->Accountsgroup_Name; ?></a></b></td>
-								<td  class="Currency"><?php echo ($Row->openingamount < 0) ?  ($Row->openingamount * -1) : 0; ?></td>
-                                <td class="Currency"><?php echo ($Row->openingamount > 0) ?  $Row->openingamount : 0; ?></td>                               
+								<!-- <td  class="Currency"><?php echo ($Row->openingamount < 0) ?  ($Row->openingamount * -1) : 0; ?></td> 
+                                <td class="Currency"><?php echo ($Row->openingamount > 0) ?  $Row->openingamount : 0; ?></td>-->
+                                 <td  class="Currency"><?php echo $Row->openingdamount; ?></td> 
+                                <td class="Currency"><?php echo $Row->openingcamount; ?></td>                               
 							   
 							<td class="Currency"><?php echo ($Row->amount);  ?></td>
                               <td class="Currency"><?php echo ($Row->camount);  ?></td>
 								
-								<td class="Currency"><?php echo ($Row->closingamount < 0) ?  ($Row->closingamount * -1) : 0; ?></td>
-                                <td class="Currency"><?php echo ($Row->closingamount > 0) ?  $Row->closingamount : 0; ?></td>
+								<!-- <td class="Currency"><?php echo ($Row->closingamount < 0) ?  ($Row->closingamount * -1) : 0; ?></td>
+                                <td class="Currency"><?php echo ($Row->closingamount > 0) ?  $Row->closingamount : 0; ?></td> -->
+                                <td class="Currency"><?php echo $Row->closingdamount; ?></td>
+                                <td class="Currency"><?php echo $Row->closingcamount; ?></td>
                             </tr>
                         <?php                        
                         }
