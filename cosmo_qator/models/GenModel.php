@@ -1,4 +1,5 @@
 <?php
+
 class GenModel extends CI_Model
 {
 	//Getting Unique or All Dropdown Values 
