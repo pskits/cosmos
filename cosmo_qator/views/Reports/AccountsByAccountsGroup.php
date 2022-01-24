@@ -1,4 +1,5 @@
 <?php
+
 defined('BASEPATH') or exit('No direct script access allowed');
 include('Includes/ReportsHead.php');
 include('Includes/ReportsMenu.php');
@@ -102,8 +103,10 @@ include('Includes/ReportsMenu.php');
                         ?>
                             <tr>                               
                                 <td><a href="<?php echo site_url('Reports/AccountsByAccountsGroupGeneralLedger') . '/?OfficeLedger_id='.$Row->OfficeLedger_Id.'&fromdate='.$fromdate.'&todate='.$todate; ?> "><?php echo $Row->Ledgername; ?></a></td>
-                                <td class="Currency"><?php echo ($Row->openingamount < 0) ?  ($Row->openingamount * -1) : 0; ?></td>
-                                <td class="Currency"><?php echo ($Row->openingamount > 0) ?  $Row->openingamount : 0; ?></td>
+                                <!-- <td class="Currency"><?php echo ($Row->openingamount < 0) ?  ($Row->openingamount * -1) : 0; ?></td>
+                                <td class="Currency"><?php echo ($Row->openingamount > 0) ?  $Row->openingamount : 0; ?></td> -->
+                                <td  class="Currency"><?php echo $Row->openingdamount; ?></td> 
+                                <td class="Currency"><?php echo $Row->openingcamount; ?></td>
 								
 								<td class="Currency"><?php echo ($Row->amount);  ?></td>
                               <td class="Currency"><?php echo ($Row->camount);  ?></td>
@@ -111,8 +114,10 @@ include('Includes/ReportsMenu.php');
 								<!--	<td class="Currency"><?php echo ($Row->amount < 0) ?  ($Row->amount * -1) : 0; ?></td>
                                 <td class="Currency"><?php echo ($Row->amount > 0) ?  $Row->amount : 0; ?></td>  -->
 								
-								<td class="Currency"><?php echo ($Row->closingamount < 0) ?  ($Row->closingamount * -1) : 0; ?></td>
-                                <td class="Currency"><?php echo ($Row->closingamount > 0) ?  $Row->closingamount : 0; ?></td>
+								<!-- <td class="Currency"><?php echo ($Row->closingamount < 0) ?  ($Row->closingamount * -1) : 0; ?></td>
+                                <td class="Currency"><?php echo ($Row->closingamount > 0) ?  $Row->closingamount : 0; ?></td> -->
+                                <td  class="Currency"><?php echo $Row->closingdamount; ?></td> 
+                                <td class="Currency"><?php echo $Row->closingcamount; ?></td>
                             </tr>
                         <?php
                            
